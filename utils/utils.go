@@ -8,8 +8,10 @@ import (
 	"github.com/diamondburned/arikawa/v3/discord"
 	"github.com/diamondburned/arikawa/v3/gateway"
 	"github.com/diamondburned/arikawa/v3/state"
+	"github.com/diamondburned/arikawa/v3/utils/json/option"
 	"github.com/shopspring/decimal"
 	"gu2list/commands"
+	"gu2list/database"
 	"gu2list/utils/VCoin"
 	"log"
 	"math"
@@ -23,6 +25,10 @@ func DiscordClient(Token string) /**state.State*/ {
 		Timeout: 60 * time.Second,
 	}))
 
+	/*
+	   Examples: Check VCoin Price
+	             Check if a User Has ManagerRole
+	*/
 	r.AddFunc("vprice", func(ctx context.Context, data cmdroute.CommandData) *api.InteractionResponseData {
 		Price, Update := VCoin.Price()
 		if Price != "" && Update != "" {
@@ -52,6 +58,20 @@ func DiscordClient(Token string) /**state.State*/ {
 		}
 		return nil
 	})
+
+	r.AddFunc("test", func(ctx context.Context, data cmdroute.CommandData) *api.InteractionResponseData {
+		Reply_Content := option.NewNullableString("Sorrt! You were rejected")
+
+		if database.IsManager(uint64(data.Event.SenderID())) {
+			Reply_Content = option.NewNullableString("Congratulations! you have the admin role!")
+		}
+
+		return &api.InteractionResponseData{
+			Content: Reply_Content,
+			Flags:   discord.EphemeralMessage,
+		}
+	})
+
 	s.AddInteractionHandler(r)
 	s.AddIntents(gateway.IntentGuilds | gateway.IntentGuildMembers | gateway.IntentDirectMessages | gateway.IntentGuildMessages)
 

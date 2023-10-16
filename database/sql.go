@@ -7,14 +7,10 @@ import (
 	"gu2list/ent/users"
 	"time"
 
-	//"gorm.io/gorm"
-	//_ "github.com/mattn/go-sqlite3"
 	"gu2list/ent"
 	"gu2list/ent/schema"
 	"log"
 )
-
-//type Client *ent.Client
 
 var (
 	sql *ent.Client
@@ -84,14 +80,16 @@ func UpdateUserLogs(userID uint64, Events string, Accept bool, timeAt int64) (er
 	return nil
 }
 
-func IsManager(UserID uint64) (result bool) {
-	Users, err := sql.Users.Query().Where(users.UserID(UserID)).Only(context.Background()) //.Where(users.UserID(UserID)).Only(context.Background())
-	if err != nil {
-		panic(err)
+func IsManager(UserID uint64) bool {
+	//fmt.Println(UserID)
+	User, err := sql.Users.Query().Where(users.UserID(UserID)).Only(context.Background())
+	if err != nil || User == nil {
+		//fmt.Println(err)
+		return false
 	}
 
-	if Users.Manager {
-		result = true
+	if User.Manager {
+		return true
 	}
-	return result
+	return false
 }

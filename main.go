@@ -2,6 +2,7 @@ package main
 
 import (
 	"flag"
+	"gu2list/database"
 	"gu2list/ent"
 	"gu2list/utils"
 )
@@ -15,21 +16,21 @@ func init() {
 	flag.Parse()
 }
 
+// Usage:  go run main.go -t {Your Token Here}
+
 func main() {
-	/*
 
-		var err error
+	var err error
 
-		//Choose Database on your own
-		//Here is Example Using SqlClient Database.
-		//Testing env Using XAMPP , SqlClient
-		//Connect To Database
+	//Choose Database on your own
+	//Here is Example Using SqlClient Database.
+	//Testing env Using XAMPP , SqlClient
+	//Connect To Database
 
-		SqlClient, err = database.CreateClient("root", "", "test", "localhost", 3306)
-		if err != nil {
-			panic(err)
-		}
+	SqlClient, err = database.CreateClient("root", "", "test", "localhost", 3306)
+	if err != nil {
+		panic(err)
+	}
 
-	*/
 	utils.DiscordClient(*Token)
 }
